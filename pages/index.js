@@ -114,7 +114,7 @@ const IndexPage = () => {
                 <div id='title'>
                     <div id="left">
                         <img src="/logo.webp" alt="图片加载失败" />
-                        <h1>{titleName && titleName.titleName}<br></br>
+                        <h1>{titleName && titleName.titleName}
                             Nav
                         </h1>
                         <button id="refresh-button" onClick={handleButtonClick} />
