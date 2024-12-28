@@ -3,7 +3,6 @@ import { Client } from '@notionhq/client';
 import * as dotenv from 'dotenv';
 
 // properties
-
 dotenv.config();
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
@@ -12,7 +11,6 @@ const notion = new Client({ auth: process.env.NOTION_API_KEY });
 let uniqueTagsCache: any = null; // 根据实际情况设置缓存的类型
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
-
     // 处理 GET 请求
     if (req.method === 'GET') {
         // 检查缓存是否存在
@@ -30,11 +28,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const tagNames: string[] = [];
                 response.results.forEach((page) => {
                     if ((page as any).properties && (page as any).properties.Category && (page as any).properties.Category.select) {
-                        (page as any).properties.Category.select.forEach((tag: { name: string }) => {
-                            if (!tagNames.includes(tag.name)) {
-                                tagNames.push(tag.name);
-                            }
-                        });
+                        const tag = (page as any).properties.Category.select; // 直接获取 select 对象
+                        if (tag && tag.name && !tagNames.includes(tag.name)) {
+                            tagNames.push(tag.name); // 添加标签名称到数组
+                        }
                     }
                 });
 
@@ -53,6 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(405).json({ message: 'Method not allowed' });
     }
 }
+
 // 清除缓存
 export async function clearCache(): Promise<void> {
     uniqueTagsCache = null;
