@@ -151,7 +151,7 @@ const IndexPage = () => {
                                     <h2 className="card-title">{page.properties.Name.title[0].plain_text}</h2>
                                     {/* 这里将显示页面分类 */}
                                     <div className="card-tags">
-                                        {page.properties.Category.multi_select.map((tag, index) => {
+                                        {page.properties.Category.select.map((tag, index) => {
                                             return (
                                                 <span className="tag" key={index}>
                                                     {tag.name}
