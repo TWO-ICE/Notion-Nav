@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         filter: {
                             property: "Tags",
                             select: {
-                                contains: tag,
+                                equals: tag,
                             },
                         },
                     });
