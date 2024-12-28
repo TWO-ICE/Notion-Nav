@@ -36,7 +36,7 @@ function MyApp({Component, pageProps}) {
         <>
         
             <Head>
-                <html lang="zh-CN">
+                <html lang="zh-CN" /> {/* 设置页面语言为中文 */}
                 <title>{ogTitle}</title>
                 <meta property="twitter:image" content={ogImg} />
                 <meta property="twitter:card" content="app"/>
