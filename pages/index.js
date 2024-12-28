@@ -1,5 +1,3 @@
-// pages/index.js
-
 import React, { useEffect, useState } from 'react';
 import setResponsivePadding from './js/responsive';
 
@@ -7,7 +5,6 @@ const IndexPage = () => {
     const [databaseContent, setDatabaseContent] = useState([]);
     const [titleName, setTitleName] = useState([]);
     const [uniqueTags, setUniqueTags] = useState([]);
-
 
     // 过滤数据库内容
     const filterDatabaseContent = (tag) => {
@@ -30,9 +27,9 @@ const IndexPage = () => {
                 // 过滤数据库内容
                 const filteredDatabaseContent = data.results.filter(page => {
                     // 这里将显示页面分类
-                    const pageTags = page.properties.Category.select.map(tag => tag.name);
+                    const pageTag = page.properties.Category.select; // 直接获取 select 对象
                     // 返回过滤后的数据库内容
-                    return pageTags.includes(tag);
+                    return pageTag && pageTag.name === tag; // 检查是否匹配
                 });
                 // 更新数据库内容
                 setDatabaseContent({
@@ -43,7 +40,6 @@ const IndexPage = () => {
     }
 
     useEffect(() => {
-
         // 获取getUniqueTags的内容
         fetch('/api/getUniqueTags')
             .then(response => response.json())
@@ -81,11 +77,8 @@ const IndexPage = () => {
         };
     }, []);
 
-
-
     // 刷新缓存处理函数
     const handleButtonClick = async () => {
-
         try {
             // 发送 POST 请求到 refreshCache API 路由
             const response = await fetch('/api/getDatabaseContent', {
@@ -105,6 +98,7 @@ const IndexPage = () => {
             console.error('Failed to send request', error);
         }
     }
+
     // 渲染页面内容和使用 `databaseContent` 数据
     return (
         <>
@@ -117,7 +111,7 @@ const IndexPage = () => {
                         <h1>{titleName && titleName.titleName}
                             Nav
                         </h1>
-                        <button id="refresh-button" onClick={handleButtonClick} />
+                        <button id="refresh-button" onClick={handleButtonClick}>刷新</button>
                     </div>
                 </div>
                 <div id="nav">
@@ -132,44 +126,43 @@ const IndexPage = () => {
                     })}
                 </div>
             </header>
-                <main>
-                    <div id="cards-container">
-                        {/* 这里将显示数据库内容 */}
-                        {databaseContent.results && databaseContent.results.map((page, index) => {
-                            // 检查 Icons 字段是否为文件类型或 URL 类型
-                            const imageUrl = 
-                                (page.properties.Icons.files && page.properties.Icons.files[0] && page.properties.Icons.files[0].file.url) || 
-                                (page.properties.Icons.url ? page.properties.Icons.url : null);
+            <main>
+                <div id="cards-container">
+                    {/* 这里将显示数据库内容 */}
+                    {databaseContent.results && databaseContent.results.map((page, index) => {
+                        // 检查 Icons 字段是否为文件类型或 URL 类型
+                        const imageUrl = 
+                            (page.properties.Icons.files && page.properties.Icons.files[0] && page.properties.Icons.files[0].file.url) || 
+                            (page.properties.Icons.url ? page.properties.Icons.url : null);
                 
-                            return (
-                                <a href={page.properties.Website.url} target="_blank" className="card" key={index}>
-                                    {/* 这里将显示页面名称 */}
-                                    <div className='icons'>
-                                        <img src={imageUrl} className="card-image-shadow" alt="图片加载失败" />
-                                        <img src={imageUrl} className="card-image" alt="图片加载失败" />
-                                    </div>
-                                    <h2 className="card-title">{page.properties.Name.title[0].plain_text}</h2>
-                                    {/* 这里将显示页面分类 */}
-                                    <div className="card-tags">
-                                        {page.properties.Category.select.map((tag, index) => {
-                                            return (
-                                                <span className="tag" key={index}>
-                                                    {tag.name}
-                                                </span>
-                                            );
-                                        })}
-                                    </div>
-                                    {/* 这里将显示页面描述 */}
-                                    <p>{page.properties.Description.rich_text[0].plain_text}</p>
-                                    {/* 这里将显示页面链接 */}
-                                </a>
-                            );
-                        })}
-                    </div>
-                </main>
+                        return (
+                            <a href={page.properties.Website.url} target="_blank" className="card" key={index}>
+                                {/* 这里将显示页面名称 */}
+                                <div className='icons'>
+                                    <img src={imageUrl} className="card-image-shadow" alt="图片加载失败" />
+                                    <img src={imageUrl} className="card-image" alt="图片加载失败" />
+                                </div>
+                                <h2 className="card-title">{page.properties.Name.title[0].plain_text}</h2>
+                                {/* 这里将显示页面分类 */}
+                                <div className="card-tags">
+                                    {page.properties.Category.select && (
+                                        <span className="tag">
+                                            {page.properties.Category.select.name} {/* 直接访问 select.name */}
+                                        </span>
+                                    )}
+                                </div>
+                                {/* 这里将显示页面描述 */}
+                                <p>{page.properties.Description.rich_text[0].plain_text}</p>
+                                {/* 这里将显示页面链接 */}
+                            </a>
+                        );
+                    })}
+                </div>
+            </main>
         </>
     );
 };
+
 console.log(process.env.NAV_NAME);
 
 export default IndexPage;
