@@ -29,8 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 // 提取标签名称列表并去重
                 const tagNames: string[] = [];
                 response.results.forEach((page) => {
-                    if ((page as any).properties && (page as any).properties.Category && (page as any).properties.Category.multi_select) {
-                        (page as any).properties.Category.multi_select.forEach((tag: { name: string }) => {
+                    if ((page as any).properties && (page as any).properties.Category && (page as any).properties.Category.select) {
+                        (page as any).properties.Category.select.forEach((tag: { name: string }) => {
                             if (!tagNames.includes(tag.name)) {
                                 tagNames.push(tag.name);
                             }
