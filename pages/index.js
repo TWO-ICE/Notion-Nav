@@ -30,7 +30,7 @@ const IndexPage = () => {
                 // 过滤数据库内容
                 const filteredDatabaseContent = data.results.filter(page => {
                     // 这里将显示页面分类
-                    const pageTags = page.properties.Category.multi_select.map(tag => tag.name);
+                    const pageTags = page.properties.Category.select.map(tag => tag.name);
                     // 返回过滤后的数据库内容
                     return pageTags.includes(tag);
                 });
