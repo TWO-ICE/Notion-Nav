@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         database_id: process.env.DATABASE_ID!,
                         filter: {
                             property: "Tags",
-                            multi_select: {
+                            select: {
                                 contains: tag,
                             },
                         },
