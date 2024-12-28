@@ -34,8 +34,9 @@ function MyApp({Component, pageProps}) {
     }, []);
     return (
         <>
-        <html lang="zh-CN">
+        
             <Head>
+                <html lang="zh-CN">
                 <title>{ogTitle}</title>
                 <meta property="twitter:image" content={ogImg} />
                 <meta property="twitter:card" content="app"/>
