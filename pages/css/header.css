@@ -34,7 +34,6 @@ header #title #left h1 {
 
 header #title #left #refresh-button {
     width: 24px;
-    height: 40px;
     border: none;
     background: url("../icons/sync-link.svg") no-repeat center;
 
