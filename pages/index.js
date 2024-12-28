@@ -111,7 +111,7 @@ const IndexPage = () => {
                         <h1>{titleName && titleName.titleName}
                             Nav
                         </h1>
-                        <button id="refresh-button" onClick={handleButtonClick}>刷新</button>
+                        <button id="refresh-button" onClick={handleButtonClick}></button>
                     </div>
                 </div>
                 <div id="nav">
