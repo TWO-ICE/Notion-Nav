@@ -138,37 +138,41 @@ const IndexPage = () => {
                     })}
                 </div>
             </header>
-            <main>
-                <div id="cards-container">
-                    {/* 这里将显示数据库内容 */}
-                    {databaseContent.results && databaseContent.results.map((page, index) => {
-                        const imageUrl = page.properties.Icons.files && page.properties.Icons.files[0] && page.properties.Icons.files[0].file.url;
-                        return (
-                            <a href={page.properties.Website.url} target="_blank" className="card" key={index}>
-                                {/* 这里将显示页面名称 */}
-                                <div className='icons'>
-                                    <img src={imageUrl} className="card-image-shadow" alt="图片加载失败" />
-                                    <img src={imageUrl} className="card-image" alt="图片加载失败" />
-                                </div>
-                                <h2 className="card-title">{page.properties.Name.title[0].plain_text}</h2>
-                                {/* 这里将显示页面分类 */}
-                                <div className="card-tags">
-                                    {page.properties.Category.multi_select.map((tag, index) => {
-                                        return (
-                                            <span className="tag" key={index}>
-                                                {tag.name}
-                                            </span>
-                                        );
-                                    })}
-                                </div>
-                                {/* 这里将显示页面描述 */}
-                                <p>{page.properties.Description.rich_text[0].plain_text}</p>
-                                {/* 这里将显示页面链接 */}
-                            </a>
-                        );
-                    })}
-                </div>
-            </main>
+                <main>
+                    <div id="cards-container">
+                        {/* 这里将显示数据库内容 */}
+                        {databaseContent.results && databaseContent.results.map((page, index) => {
+                            // 检查 Icons 字段是否为文件类型或 URL 类型
+                            const imageUrl = 
+                                (page.properties.Icons.files && page.properties.Icons.files[0] && page.properties.Icons.files[0].file.url) || 
+                                (page.properties.Icons.url ? page.properties.Icons.url : null);
+                
+                            return (
+                                <a href={page.properties.Website.url} target="_blank" className="card" key={index}>
+                                    {/* 这里将显示页面名称 */}
+                                    <div className='icons'>
+                                        <img src={imageUrl} className="card-image-shadow" alt="图片加载失败" />
+                                        <img src={imageUrl} className="card-image" alt="图片加载失败" />
+                                    </div>
+                                    <h2 className="card-title">{page.properties.Name.title[0].plain_text}</h2>
+                                    {/* 这里将显示页面分类 */}
+                                    <div className="card-tags">
+                                        {page.properties.Category.multi_select.map((tag, index) => {
+                                            return (
+                                                <span className="tag" key={index}>
+                                                    {tag.name}
+                                                </span>
+                                            );
+                                        })}
+                                    </div>
+                                    {/* 这里将显示页面描述 */}
+                                    <p>{page.properties.Description.rich_text[0].plain_text}</p>
+                                    {/* 这里将显示页面链接 */}
+                                </a>
+                            );
+                        })}
+                    </div>
+                </main>
             <footer className='blur'>
                 <img src="/next.svg" alt="图片加载失败" />
                 <a href="https://vercel.com/kailous/rain-forest-notion-nav"><img src="/vercel.svg" alt="图片加载失败" /></a>
