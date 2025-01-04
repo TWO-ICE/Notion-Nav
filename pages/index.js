@@ -34,50 +34,61 @@ const IndexPage = () => {
 
     // 渲染页面内容和使用 `databaseContent` 数据
     return (
-        <div style={{ display: 'flex' }}>
-            <div style={{ width: '200px', borderRight: '1px solid #ccc' }}>
-                {/* 标签栏内容 */}
-                <h3>标签栏</h3>
-                <ul>
-                    {uniqueTags && uniqueTags.map((tag, index) => (
-                        <li key={index} onClick={() => setSelectedTag(tag)} style={{ cursor: 'pointer' }}>
-                            {tag}
-                        </li>
-                    ))}
-                </ul>
-            </div>
-            <div style={{ flex: 1 }}>
-                {/* 主内容区域 */}
-                <h1>{selectedTag ? `${selectedTag} 的内容` : '主内容'}</h1>
-                <div id="cards-container">
-                    {/* 这里将显示数据库内容 */}
-                    {databaseContent.results && databaseContent.results.map((page, index) => {
-                        const imageUrl = 
-                            (page.properties.Icons.files && page.properties.Icons.files[0] && page.properties.Icons.files[0].file.url) || 
-                            (page.properties.Icons.url ? page.properties.Icons.url : null);
-                        const pageTag = page.properties.Category.select ? page.properties.Category.select.name : '未分类';
+        <>
+            <header className='blur'>
+                <div id='title'>
+                    <div id="left">
+                        <img src="/logo.webp" alt="图片加载失败" />
+                        <h1>{titleName && titleName.titleName} Nav</h1>
+                        <button id="refresh-button" onClick={handleButtonClick}></button>
+                    </div>
+                </div>
+            </header>
+            <div style={{ display: 'flex' }}>
+                <div style={{ width: '200px', borderRight: '1px solid #ccc' }}>
+                    {/* 标签栏内容 */}
+                    <h3>标签栏</h3>
+                    <ul>
+                        {uniqueTags && uniqueTags.map((tag, index) => (
+                            <li key={index} onClick={() => setSelectedTag(tag)} style={{ cursor: 'pointer' }}>
+                                {tag}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                <div style={{ flex: 1 }}>
+                    {/* 主内容区域 */}
+                    <h1>{selectedTag ? `${selectedTag} 的内容` : '主内容'}</h1>
+                    <div id="cards-container">
+                        {/* 这里将显示数据库内容 */}
+                        {databaseContent.results && databaseContent.results.map((page, index) => {
+                            const imageUrl = 
+                                (page.properties.Icons.files && page.properties.Icons.files[0] && page.properties.Icons.files[0].file.url) || 
+                                (page.properties.Icons.url ? page.properties.Icons.url : null);
+                            const pageTag = page.properties.Category.select ? page.properties.Category.select.name : '未分类';
 
-                        // 仅在选中的标签匹配时显示内容
-                        if (selectedTag === null || selectedTag === pageTag) {
-                            return (
-                                <a href={page.properties.Website.url} target="_blank" className="card" key={index}>
-                                    <div className='icons'>
-                                        <img src={imageUrl} className="card-image-shadow" alt="图片加载失败" />
-                                        <img src={imageUrl} className="card-image" alt="图片加载失败" />
-                                    </div>
-                                    <h2 className="card-title">{page.properties.Name.title[0].plain_text}</h2>
-                                    <div className="card-tags">
-                                        <span className="tag">{pageTag}</span>
-                                    </div>
-                                    <p>{page.properties.Description.rich_text[0].plain_text}</p>
-                                </a>
-                            );
-                        }
-                        return null; // 不显示不匹配的内容
-                    })}
+                            // 仅在选中的标签匹配时显示内容
+                            if (selectedTag === null || selectedTag === pageTag) {
+                                return (
+                                    <a href={page.properties.Website.url} target="_blank" className="card" key={index}>
+                                        <div className='icons'>
+                                            <img src={imageUrl} className="card-image-shadow" alt="图片加载失败" />
+                                            <img src={imageUrl} className="card-image" alt="图片加载失败" />
+                                        </div>
+                                        <h2 className="card-title">{page.properties.Name.title[0].plain_text}</h2>
+                                        <div className="card-tags">
+                                            <span className="tag">{pageTag}</span>
+                                        </div>
+                                        <p>{page.properties.Description.rich_text[0].plain_text}</p>
+                                    </a>
+                                );
+                            }
+                            return null; // 不显示不匹配的内容
+                        })}
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
