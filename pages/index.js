@@ -5,36 +5,20 @@ const IndexPage = () => {
     const [databaseContent, setDatabaseContent] = useState([]);
     const [titleName, setTitleName] = useState([]);
     const [uniqueTags, setUniqueTags] = useState([]);
+    const [selectedTag, setSelectedTag] = useState(null);
 
     // 过滤数据库内容
     const filterDatabaseContent = (tag) => {
-        // 如果标签为"全部"，则显示全部内容
-        if (tag === '全部') {
-            // 获取数据库内容
-            fetch('/api/getDatabaseContent')
-                .then(response => response.json())
-                .then(data => {
-                    // 更新数据库内容
-                    setDatabaseContent(data);
-                })
-                .catch(error => console.error(error));
-            return;
-        }
+        setSelectedTag(tag);
         // 获取数据库内容
         fetch('/api/getDatabaseContent')
             .then(response => response.json())
             .then(data => {
-                // 过滤数据库内容
-                const filteredDatabaseContent = data.results.filter(page => {
-                    // 这里将显示页面分类
-                    const pageTag = page.properties.Category.select; // 直接获取 select 对象
-                    // 返回过滤后的数据库内容
-                    return pageTag && pageTag.name === tag; // 检查是否匹配
+                const filteredDatabaseContent = tag === '全部' ? data.results : data.results.filter(page => {
+                    const pageTag = page.properties.Category.select;
+                    return pageTag && pageTag.name === tag;
                 });
-                // 更新数据库内容
-                setDatabaseContent({
-                    results: filteredDatabaseContent,
-                });
+                setDatabaseContent({ results: filteredDatabaseContent });
             })
             .catch(error => console.error(error));
     }
@@ -101,65 +85,47 @@ const IndexPage = () => {
 
     // 渲染页面内容和使用 `databaseContent` 数据
     return (
-        <>
-            {/* 渲染页面内容和使用 `databaseContent` 数据 */}
-            <header className='blur'>
-                {/* 这里将显示数据库名称 */}
-                <div id='title'>
-                    <div id="left">
-                        <img src="/logo.webp" alt="图片加载失败" />
-                        <h1>{titleName && titleName.titleName}
-                            Nav
-                        </h1>
-                        <button id="refresh-button" onClick={handleButtonClick}></button>
-                    </div>
-                </div>
-                <div id="nav">
-                    {/* 插入按钮"全部"*/}
-                    <button className="nav-button" onClick={() => { filterDatabaseContent('全部'); }}>全部</button>
-                    {/* 这里将显示标签选项 */}
-                    {uniqueTags && uniqueTags.map((tag, index) => {
-                        return (
-                            <button className="nav-button" key={index} onClick={() => { filterDatabaseContent(tag); }}>
-                                {tag}
-                            </button>)
-                    })}
-                </div>
-            </header>
-            <main>
+        <div style={{ display: 'flex' }}>
+            <div style={{ width: '200px', borderRight: '1px solid #ccc' }}>
+                {/* 标签栏内容 */}
+                <h3>标签栏</h3>
+                <ul>
+                    <li onClick={() => filterDatabaseContent('全部')}>全部</li>
+                    {uniqueTags && uniqueTags.map((tag, index) => (
+                        <li key={index} onClick={() => filterDatabaseContent(tag)}>{tag}</li>
+                    ))}
+                </ul>
+            </div>
+            <div style={{ flex: 1 }}>
+                {/* 主内容区域 */}
+                <h1>{selectedTag ? `${selectedTag} 的内容` : '主内容'}</h1>
                 <div id="cards-container">
                     {/* 这里将显示数据库内容 */}
                     {databaseContent.results && databaseContent.results.map((page, index) => {
-                        // 检查 Icons 字段是否为文件类型或 URL 类型
                         const imageUrl = 
                             (page.properties.Icons.files && page.properties.Icons.files[0] && page.properties.Icons.files[0].file.url) || 
                             (page.properties.Icons.url ? page.properties.Icons.url : null);
-                
                         return (
                             <a href={page.properties.Website.url} target="_blank" className="card" key={index}>
-                                {/* 这里将显示页面名称 */}
                                 <div className='icons'>
                                     <img src={imageUrl} className="card-image-shadow" alt="图片加载失败" />
                                     <img src={imageUrl} className="card-image" alt="图片加载失败" />
                                 </div>
                                 <h2 className="card-title">{page.properties.Name.title[0].plain_text}</h2>
-                                {/* 这里将显示页面分类 */}
                                 <div className="card-tags">
                                     {page.properties.Category.select && (
                                         <span className="tag">
-                                            {page.properties.Category.select.name} {/* 直接访问 select.name */}
+                                            {page.properties.Category.select.name}
                                         </span>
                                     )}
                                 </div>
-                                {/* 这里将显示页面描述 */}
                                 <p>{page.properties.Description.rich_text[0].plain_text}</p>
-                                {/* 这里将显示页面链接 */}
                             </a>
                         );
                     })}
                 </div>
-            </main>
-        </>
+            </div>
+        </div>
     );
 };
 
